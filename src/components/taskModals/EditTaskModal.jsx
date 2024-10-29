@@ -1,27 +1,35 @@
 import { useState } from "react";
 import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
+import { useBoard } from "../../BoardContext";
 
-const EditTaskModal = ({ task }) => {
-  const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description);
-  const [subtasks, setSubtasks] = useState(task.subtasks);
+const EditTaskModal = () => {
+  const { modal, updateTask } = useBoard();
+  const [task, setTask] = useState(modal.data);
+
+  const [title, setTitle] = useState(task?.title || "");
+  const [description, setDescription] = useState(task?.description || "");
+  const [subtasks, setSubtasks] = useState(task?.subtasks || []);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const statusOptions = ["Doing", "To Do", "Done"];
 
-  // const handleStatus = (newStatus) => {
-  //   const updatedTask = { ...task };
-  //   updatedTask.status = newStatus;
-  //   setSelectedTask(updatedTask);
-  //   setIsDropdownOpen(false);
-  // };
+  const handleStatus = (newStatus) => {
+    setTask((prevTask) => ({ ...prevTask, status: newStatus }));
+    setIsDropdownOpen(false);
+  };
+
+  const handleSaveChanges = (e) => {
+    e.preventDefault();
+    const updatedTask = { ...task, title, description, subtasks };
+    updateTask(updatedTask);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
       <div className="relative w-[480px] bg-white rounded-md p-8 flex flex-col gap-6 shadow-lg">
         <h2 className="headingL text-black">Edit Task</h2>
-        <form className="flex flex-col gap-6">
+        <form onSubmit={handleSaveChanges} className="flex flex-col gap-6">
           {/* Title */}
           <div className="flex flex-col gap-2">
             <label htmlFor="title" className="bodyM text-mediumGrey">
@@ -36,8 +44,8 @@ const EditTaskModal = ({ task }) => {
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
-          {/* Description */}
 
+          {/* Description */}
           <div className="flex flex-col gap-2">
             <label htmlFor="description" className="bodyM text-mediumGrey">
               Description
@@ -52,8 +60,8 @@ const EditTaskModal = ({ task }) => {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-          {/* Subtasks */}
 
+          {/* Subtasks */}
           <div className="flex flex-col gap-2">
             <label htmlFor="subtask" className="bodyM text-mediumGrey">
               Subtasks
@@ -72,13 +80,22 @@ const EditTaskModal = ({ task }) => {
                     setSubtasks(updatedSubtasks);
                   }}
                 />
-                <RxCross2 className="size-5 text-mediumGrey cursor-pointer hover:text-mainPurple" />
+                <RxCross2
+                  className="size-5 text-mediumGrey cursor-pointer hover:text-mainPurple"
+                  onClick={() => {
+                    const updatedSubtasks = subtasks.filter(
+                      (_, i) => i !== index,
+                    );
+                    setSubtasks(updatedSubtasks);
+                  }}
+                />
               </div>
             ))}
             <button className="w-full bg-mainPurple bg-opacity-10 py-2 rounded-[20px] text-mainPurple bodyL font-bold">
               + Add New Subtask
             </button>
           </div>
+
           {/* Current Status Dropdown */}
           <div className="relative">
             <h3 className="bodyM text-mediumGrey mb-2">Current Status</h3>
@@ -93,14 +110,12 @@ const EditTaskModal = ({ task }) => {
                 <FaChevronDown className="text-mainPurple" />
               )}
             </div>
-
-            {/* Dropdown List */}
             {isDropdownOpen && (
               <ul className="absolute top-full mt-2 left-0 w-full bg-white border border-mediumGrey rounded-md shadow-lg">
                 {statusOptions.map((option, idx) => (
                   <li
                     key={idx}
-                    className={`bodyL text-black flex justify-between items-center px-4 py-2 hover:bg-lightBG cursor-pointer ${
+                    className={`bodyL text-mediumGrey flex justify-between items-center px-4 py-2 hover:bg-lightBG cursor-pointer ${
                       task.status === option && "text-mainPurple"
                     }`}
                     onClick={() => handleStatus(option)}
@@ -114,7 +129,11 @@ const EditTaskModal = ({ task }) => {
               </ul>
             )}
           </div>
-          <button className="w-full bg-mainPurple py-2 rounded-[20px] text-white bodyL font-bold hover:bg-mainPurpleHover">
+
+          <button
+            type="submit"
+            className="w-full bg-mainPurple py-2 rounded-[20px] text-white bodyL font-bold hover:bg-mainPurpleHover"
+          >
             Save Changes
           </button>
         </form>

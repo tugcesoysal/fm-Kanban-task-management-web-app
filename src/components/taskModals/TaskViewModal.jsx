@@ -1,26 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+import { useBoard } from "../../BoardContext";
 
-const TaskViewModal = ({ task, onDelete, onEdit }) => {
+const TaskViewModal = () => {
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const statusOptions = ["Doing", "To Do", "Done"];
+  const { modal, openModal, updateTask } = useBoard();
+  const [task, setTask] = useState(modal.data);
 
-  // const toggleSubtasksCompletion = (index) => {
-  //   const updatedTask = { ...task };
-  //   updatedTask.subtasks[index].isCompleted =
-  //     !updatedTask.subtasks[index].isCompleted;
-  //   setSelectedTask(updatedTask);
-  // };
+  useEffect(() => {
+    setTask(modal.data);
+  }, [modal.data]);
 
-  // const handleStatus = (newStatus) => {
-  //   const updatedTask = { ...task };
-  //   updatedTask.status = newStatus;
-  //   setSelectedTask(updatedTask);
-  //   setIsDropdownOpen(false);
-  // };
+  const toggleSubtaskCompletion = (subtaskIndex) => {
+    const updatedSubtasks = task.subtasks.map((subtask, index) =>
+      index === subtaskIndex
+        ? { ...subtask, isCompleted: !subtask.isCompleted }
+        : subtask,
+    );
+    const updatedTask = { ...task, subtasks: updatedSubtasks };
+    setTask(updatedTask);
+    updateTask(updatedTask);
+  };
+
+  const updateTaskStatus = (newStatus) => {
+    const updatedTask = { ...task, status: newStatus };
+    setTask(updatedTask);
+    updateTask(updatedTask);
+    setIsDropdownOpen(false);
+  };
+
+  const openTaskEdit = () => {
+    openModal("EDIT_TASK", modal.data);
+  };
+
+  const openTaskDelete = () => {
+    openModal("DELETE_TASK", modal.data);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
@@ -29,13 +48,13 @@ const TaskViewModal = ({ task, onDelete, onEdit }) => {
         {isEditDeleteOpen && (
           <div className="absolute min-w-[192px] bg-white rounded-lg p-4 top-20 -right-20 shadow-drop-shadow flex flex-col gap-4 justify-start ">
             <button
-              onClick={onEdit}
+              onClick={() => openTaskEdit()}
               className=" text-start text-mediumGrey  bodyL hover:text-mainPurple"
             >
               Edit Task
             </button>
             <button
-              onClick={onDelete}
+              onClick={() => openTaskDelete()}
               className="text-start text-red  bodyL hover:text-redHover"
             >
               Delete Task
@@ -46,7 +65,6 @@ const TaskViewModal = ({ task, onDelete, onEdit }) => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <h2 className="headingL text-black">{task.title}</h2>
-
           <BsThreeDotsVertical
             onClick={() => setIsEditDeleteOpen(!isEditDeleteOpen)}
             className="text-mediumGrey text-2xl cursor-pointer"
@@ -65,7 +83,7 @@ const TaskViewModal = ({ task, onDelete, onEdit }) => {
           </h3>
           {task.subtasks.map((subtask, index) => (
             <button
-              onClick={() => toggleSubtasksCompletion(index)}
+              onClick={() => toggleSubtaskCompletion(index)}
               key={index}
               className={`flex gap-4 items-center justify-start bg-lightBG p-3 rounded-md bodyM text-black hover:text-black hover:bg-mainPurple hover:bg-opacity-25 ${
                 subtask.isCompleted ? "opacity-50 line-through" : ""
@@ -100,11 +118,11 @@ const TaskViewModal = ({ task, onDelete, onEdit }) => {
             <ul className="absolute top-full mt-2 left-0 w-full bg-white border border-mediumGrey rounded-md shadow-lg">
               {statusOptions.map((option, idx) => (
                 <li
+                  onClick={() => updateTaskStatus(option)}
                   key={idx}
                   className={`bodyL text-mediumGrey flex justify-between items-center px-4 py-2 hover:bg-lightBG cursor-pointer ${
                     task.status === option && "text-mainPurple"
                   }`}
-                  onClick={() => handleStatus(option)}
                 >
                   {option}{" "}
                   {task.status === option && (

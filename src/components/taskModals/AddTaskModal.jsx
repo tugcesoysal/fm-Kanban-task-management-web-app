@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
+import { useBoard } from "../../BoardContext";
 
 const AddTaskModal = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -16,12 +17,15 @@ const AddTaskModal = () => {
 
   const statusOptions = ["Doing", "To Do", "Done"];
 
+  const { addTask } = useBoard();
+
   const handleStatus = (newStatus) => {
     setNewTask((prevTask) => ({ ...prevTask, status: newStatus }));
     setIsDropdownOpen(false);
   };
 
-  const handleAddSubtask = () => {
+  const handleAddSubtask = (e) => {
+    e.preventDefault();
     setNewTask((prevTask) => ({
       ...prevTask,
       subtasks: [...prevTask.subtasks, { title: "", isCompleted: false }],
@@ -35,11 +39,16 @@ const AddTaskModal = () => {
     }));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addTask(); // Pass the new task to a parent handler or save function
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
       <div className="relative w-[480px] bg-white rounded-md p-8 flex flex-col gap-6 shadow-lg">
         <h2 className="headingL text-black">Add New Task</h2>
-        <form className="flex flex-col gap-6">
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
           {/* Title */}
           <div className="flex flex-col gap-2">
             <label htmlFor="title" className="bodyM text-mediumGrey">
@@ -58,6 +67,7 @@ const AddTaskModal = () => {
                   title: e.target.value,
                 }))
               }
+              required
             />
           </div>
 
@@ -81,6 +91,7 @@ const AddTaskModal = () => {
               }
             />
           </div>
+
           {/* Subtasks */}
           <div className="flex flex-col gap-2">
             <label htmlFor="subtask" className="bodyM text-mediumGrey">
@@ -90,7 +101,7 @@ const AddTaskModal = () => {
               <div key={index} className="flex gap-4 items-center">
                 <input
                   className="flex-1 rounded-[4px] border border-linesLight px-4 py-2 bodyL text-black outline-none"
-                  placeholder="....."
+                  placeholder="Subtask title"
                   type="text"
                   id={`subtask-${index}`}
                   name={`subtask-${index}`}
@@ -102,8 +113,8 @@ const AddTaskModal = () => {
                       return { ...prevTask, subtasks: updatedSubtasks };
                     })
                   }
+                  required
                 />
-
                 <RxCross2
                   onClick={() => handleRemoveSubtask(index)}
                   className="size-5 text-mediumGrey cursor-pointer hover:text-red"
@@ -117,12 +128,15 @@ const AddTaskModal = () => {
               + Add New Subtask
             </button>
           </div>
+
           {/* Current Status Dropdown */}
           <div className="relative">
             <h3 className="bodyM text-mediumGrey mb-2">Current Status</h3>
             <div
               className="bg-white bodyL text-black border border-mediumGrey rounded-md px-4 py-2 flex items-center justify-between cursor-pointer hover:border-mainPurple"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              role="button"
+              aria-expanded={isDropdownOpen}
             >
               <span className="bodyL text-black">{newTask.status}</span>
               {isDropdownOpen ? (
@@ -134,7 +148,10 @@ const AddTaskModal = () => {
 
             {/* Dropdown List */}
             {isDropdownOpen && (
-              <ul className="absolute top-full mt-2 left-0 w-full bg-white border border-mediumGrey rounded-md shadow-lg">
+              <ul
+                className="absolute top-full mt-2 left-0 w-full bg-white border border-mediumGrey rounded-md shadow-lg"
+                role="listbox"
+              >
                 {statusOptions.map((option, idx) => (
                   <li
                     key={idx}
@@ -142,6 +159,8 @@ const AddTaskModal = () => {
                       newTask.status === option && "text-mainPurple"
                     }`}
                     onClick={() => handleStatus(option)}
+                    role="option"
+                    aria-selected={newTask.status === option}
                   >
                     {option}{" "}
                     {newTask.status === option && (
@@ -152,7 +171,11 @@ const AddTaskModal = () => {
               </ul>
             )}
           </div>
-          <button className="w-full bg-mainPurple py-2 rounded-[20px] text-white bodyL font-bold hover:bg-mainPurpleHover">
+
+          <button
+            type="submit"
+            className="w-full bg-mainPurple py-2 rounded-[20px] text-white bodyL font-bold hover:bg-mainPurpleHover"
+          >
             Create Task
           </button>
         </form>

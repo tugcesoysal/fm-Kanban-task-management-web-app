@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
+import { useBoard } from "../../BoardContext";
 
 const AddBoardModal = () => {
+  const { addBoard } = useBoard();
   const [newBoard, setNewBoard] = useState({
     name: "",
     columns: [
@@ -88,6 +90,7 @@ const AddBoardModal = () => {
           </div>
 
           <button
+            onClick={addBoard}
             type="button"
             className="w-full bg-mainPurple py-2 rounded-[20px] text-white bodyL font-bold hover:bg-mainPurpleHover"
           >

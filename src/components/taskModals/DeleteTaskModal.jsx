@@ -1,4 +1,11 @@
-const DeleteTaskModal = ({ task, onCancel }) => {
+import { useBoard } from "../../BoardContext";
+
+const DeleteTaskModal = () => {
+  const { modal, deleteTask, closeModal } = useBoard();
+  const task = modal?.data;
+
+  if (!task) return null;
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
       <div className="relative w-[480px] bg-white rounded-md p-8 flex flex-col gap-6 shadow-lg">
@@ -9,12 +16,18 @@ const DeleteTaskModal = ({ task, onCancel }) => {
         </p>
 
         <div className="flex gap-4">
-          <button className="flex-1 py-2 bg-red text-white bodyL font-bold rounded-[20px] hover:bg-redHover">
+          <button
+            className="flex-1 py-2 bg-red text-white bodyL font-bold rounded-[20px] hover:bg-redHover"
+            onClick={() => {
+              deleteTask();
+              closeModal();
+            }}
+          >
             Delete
           </button>
           <button
-            className="flex-1 py-2 bg-lightBG text-mainPurple bodyL font-bold rounded-[20px] hover:bg-opacity-25 "
-            onClick={onCancel}
+            className="flex-1 py-2 bg-lightBG text-mainPurple bodyL font-bold rounded-[20px] hover:bg-opacity-25"
+            onClick={closeModal}
           >
             Cancel
           </button>

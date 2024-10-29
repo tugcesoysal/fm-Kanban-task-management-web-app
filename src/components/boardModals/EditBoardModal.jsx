@@ -1,10 +1,19 @@
 import { useState } from "react";
-import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
+import { useBoard } from "../../BoardContext";
 
-const EditBoardModal = ({ board }) => {
-  const [name, setName] = useState(board.name);
-  const [columns, setColumns] = useState(board.columns);
+const EditBoardModal = () => {
+  const { activeBoard, setActiveBoard, updateBoard } = useBoard();
+  const [name, setName] = useState(activeBoard.name);
+  const [columns, setColumns] = useState(activeBoard.columns);
+
+  const handleAddColumn = () => {
+    setColumns([...columns, { name: "" }]);
+  };
+
+  const handleRemoveColumn = (index) => {
+    setColumns(columns.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
@@ -27,34 +36,40 @@ const EditBoardModal = ({ board }) => {
           </div>
 
           {/* Columns */}
-
           <div className="flex flex-col gap-2">
-            <label htmlFor="subtask" className="bodyM text-mediumGrey">
-              Board Columns
-            </label>
-            {columns.map((c, index) => (
+            <label className="bodyM text-mediumGrey">Board Columns</label>
+            {columns.map((column, index) => (
               <div key={index} className="flex gap-4 items-center">
                 <input
                   className="flex-1 rounded-[4px] border border-linesLight px-4 py-2 bodyL text-black outline-none"
                   type="text"
-                  id={`column-${index}`}
-                  name={`column-${index}`}
-                  value={c.name}
+                  value={column.name}
                   onChange={(e) => {
                     const updatedColumns = [...columns];
                     updatedColumns[index].name = e.target.value;
                     setColumns(updatedColumns);
                   }}
                 />
-                <RxCross2 className="size-5 text-mediumGrey cursor-pointer hover:text-mainPurple" />
+                <RxCross2
+                  className="size-5 text-mediumGrey cursor-pointer hover:text-mainPurple"
+                  onClick={() => handleRemoveColumn(index)}
+                />
               </div>
             ))}
-            <button className="w-full bg-mainPurple bg-opacity-10 py-2 rounded-[20px] text-mainPurple bodyL font-bold">
+            <button
+              type="button"
+              onClick={handleAddColumn}
+              className="w-full bg-mainPurple bg-opacity-10 py-2 rounded-[20px] text-mainPurple bodyL font-bold"
+            >
               + Add New Column
             </button>
           </div>
 
-          <button className="w-full bg-mainPurple py-2 rounded-[20px] text-white bodyL font-bold hover:bg-mainPurpleHover">
+          <button
+            type="button"
+            onClick={updateBoard}
+            className="w-full bg-mainPurple py-2 rounded-[20px] text-white bodyL font-bold hover:bg-mainPurpleHover"
+          >
             Save Changes
           </button>
         </form>

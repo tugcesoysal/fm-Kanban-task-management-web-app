@@ -1,7 +1,15 @@
-const Board = ({ board, openTaskView }) => {
+import { useBoard } from "../BoardContext";
+
+const Board = () => {
+  const { activeBoard, openModal } = useBoard();
+
+  const openTaskView = (task) => {
+    openModal("TASK_VIEW", task);
+  };
+
   return (
     <div className="h-full p-6 flex gap-6 ">
-      {board.map((col, colIndex) => (
+      {activeBoard.columns.map((col, colIndex) => (
         <div key={colIndex} className="w-[280px]">
           <div className="flex gap-3 w-[280px] ">
             <div className="size-4 rounded-full bg-blueDot"></div>

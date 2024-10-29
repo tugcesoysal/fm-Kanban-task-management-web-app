@@ -3,9 +3,10 @@ import { IoSunny } from "react-icons/io5";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { BiHide, BiSolidShow } from "react-icons/bi";
-import { data } from "../data";
+import { useBoard } from "../BoardContext";
 
-const SideBar = ({ activeBoard, setActiveBoard, openAddBoardModal }) => {
+const SideBar = () => {
+  const { boards, setActiveBoard, activeBoard, openModal } = useBoard();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -25,7 +26,7 @@ const SideBar = ({ activeBoard, setActiveBoard, openAddBoardModal }) => {
             <h3 className="headingS text-mediumGrey ml-8 mb-5">
               ALL BOARDS (3)
             </h3>
-            {data.map((board) => (
+            {boards.map((board) => (
               <button
                 key={board.name}
                 className={`flex gap-4 items-center px-8 headingM w-[90%] h-12 rounded-r-3xl 
@@ -42,7 +43,7 @@ const SideBar = ({ activeBoard, setActiveBoard, openAddBoardModal }) => {
             ))}
 
             <button
-              onClick={openAddBoardModal}
+              onClick={() => openModal("ADD_BOARD")}
               className="flex gap-4 items-center px-8 headingM text-mainPurple w-[90%] h-12 rounded-r-3xl"
             >
               <MdOutlineSpaceDashboard className="size-5" />+ Create New Board

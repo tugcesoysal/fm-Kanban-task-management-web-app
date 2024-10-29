@@ -1,4 +1,4 @@
-export const data = [
+const data = [
   {
     name: "Platform Launch",
     columns: [
@@ -438,3 +438,5 @@ export const data = [
     ],
   },
 ];
+
+export default data;
