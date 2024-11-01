@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useBoard } from "../BoardContext";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-const Navbar = () => {
+const Navbar = ({ isMobile, setIsBoardsListOpen, isBoardsListOpen }) => {
   const { openModal, activeBoard } = useBoard();
 
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState(false);
@@ -17,36 +18,69 @@ const Navbar = () => {
     setIsEditDeleteOpen(false);
   };
 
+  const toggleBoardsList = () => setIsBoardsListOpen((prev) => !prev);
+
   return (
-    <div className=" relative flex flex-row justify-between items-center h-24 px-6 bg-white">
+    <div
+      className={`relative flex flex-row justify-between items-center h-16 sm:h-24 px-6 bg-white dark:bg-darkGrey ${
+        isBoardsListOpen && "z-50"
+      }`}
+    >
       {/* EDIT / DELETE */}
       {isEditDeleteOpen && (
-        <div className="absolute min-w-[192px] bg-white rounded-lg p-4 top-20 right-8 shadow-drop-shadow flex flex-col gap-4 justify-start ">
+        <div className="absolute min-w-[192px] bg-white dark:bg-darkBG rounded-lg p-4 top-20 right-8 shadow-drop-shadow flex flex-col gap-4 justify-start">
           <button
-            onClick={handleEdit}
-            className=" text-start text-mediumGrey  bodyL hover:text-mainPurple"
+            onClick={() => handleEdit(activeBoard)}
+            className="text-start text-mediumGrey bodyL hover:text-mainPurple"
           >
             Edit Board
           </button>
           <button
-            onClick={handleDelete}
-            className="text-start text-red  bodyL hover:text-redHover"
+            onClick={() => handleDelete(activeBoard)}
+            className="text-start text-red bodyL hover:text-redHover"
           >
             Delete Board
           </button>
         </div>
       )}
-      <h1 className="headingXL text-black">{activeBoard.name}</h1>
-      <div className="flex flex-row gap-6 items-center">
+
+      {/* Mobile Logo */}
+      {isMobile && (
+        <div className="mr-4">
+          <img src="./assets/logo-mobile.svg" alt="logo" />
+        </div>
+      )}
+
+      {/* Board Title */}
+      <h1 className="headingL sm:headingXL text-black dark:text-white mr-auto flex gap-2 items-center">
+        {activeBoard.name}{" "}
+        {isMobile &&
+          (isBoardsListOpen ? (
+            <FaChevronUp
+              onClick={toggleBoardsList}
+              className="w-2 text-mainPurple cursor-pointer"
+            />
+          ) : (
+            <FaChevronDown
+              onClick={toggleBoardsList}
+              className="w-2 text-mainPurple cursor-pointer"
+            />
+          ))}
+      </h1>
+
+      {/* Add Task Button */}
+      <div className="flex flex-row gap-4 sm:gap-6 items-center">
         <button
           onClick={() => openModal("ADD_TASK")}
-          className="bg-mainPurple rounded-3xl headingM h-12 px-6 text-white hover:bg-mainPurpleHover"
+          className="bg-mainPurple rounded-3xl headingM w-12 h-8 sm:w-[164px] sm:h-12 text-white hover:bg-mainPurpleHover"
         >
-          + Add New Task
+          + {!isMobile && "Add New Task"}
         </button>
+
+        {/* More Options */}
         <BsThreeDotsVertical
           onClick={() => setIsEditDeleteOpen(!isEditDeleteOpen)}
-          className="text-mediumGrey text-2xl cursor-pointer"
+          className="text-mediumGrey text-base sm:text-2xl cursor-pointer"
         />
       </div>
     </div>

@@ -32,6 +32,24 @@ export const BoardProvider = ({ children }) => {
   });
   const [activeBoard, setActiveBoard] = useState(boards[0] || []);
 
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
   useEffect(() => {
     saveBoardsToLocalStorage(boards);
   }, [boards]);
@@ -97,8 +115,10 @@ export const BoardProvider = ({ children }) => {
       closeModal,
       modal,
       cancel,
+      theme,
+      toggleTheme,
     }),
-    [boards, activeBoard, modal],
+    [boards, activeBoard, modal, theme],
   );
 
   return (
