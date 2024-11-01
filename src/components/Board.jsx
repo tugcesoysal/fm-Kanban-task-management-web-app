@@ -7,6 +7,10 @@ const Board = () => {
     openModal("TASK_VIEW", task);
   };
 
+  const handleEdit = (activeBoard) => {
+    openModal("EDIT_BOARD", activeBoard);
+  };
+
   return (
     <div className="h-full p-6 flex gap-6 ">
       {activeBoard.columns.map((col, colIndex) => (
@@ -23,9 +27,9 @@ const Board = () => {
               <div
                 onClick={() => openTaskView(task)}
                 key={taskIndex}
-                className="w-full rounded-lg bg-white px-4 py-6 shadow-drop-shadow cursor-pointer group"
+                className="w-full rounded-lg bg-white dark:bg-darkGrey px-4 py-6 shadow-drop-shadow cursor-pointer group"
               >
-                <h2 className="headingM text-black group-hover:text-mainPurple">
+                <h2 className="headingM text-black dark:text-white group-hover:text-mainPurple">
                   {task.title}
                 </h2>
                 <p className="bodyM text-mediumGrey mt-2">
@@ -40,7 +44,10 @@ const Board = () => {
           </div>
         </div>
       ))}
-      <button className="w-[280px] flex items-center justify-center bg-linesLight rounded-md headingXL text-mediumGrey hover:text-mainPurple">
+      <button
+        onClick={() => handleEdit(activeBoard)}
+        className="w-[280px] flex items-center justify-center bg-linesLight dark:bg-darkGrey rounded-md headingXL text-mediumGrey hover:text-mainPurple"
+      >
         + New Column
       </button>
     </div>

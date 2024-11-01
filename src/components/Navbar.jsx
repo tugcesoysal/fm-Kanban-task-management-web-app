@@ -22,13 +22,13 @@ const Navbar = ({ isMobile, setIsBoardsListOpen, isBoardsListOpen }) => {
 
   return (
     <div
-      className={`relative flex flex-row justify-between items-center h-16 sm:h-24 px-6 bg-white ${
+      className={`relative flex flex-row justify-between items-center h-16 sm:h-24 px-6 bg-white dark:bg-darkGrey ${
         isBoardsListOpen && "z-50"
       }`}
     >
       {/* EDIT / DELETE */}
       {isEditDeleteOpen && (
-        <div className="absolute min-w-[192px] bg-white rounded-lg p-4 top-20 right-8 shadow-drop-shadow flex flex-col gap-4 justify-start">
+        <div className="absolute min-w-[192px] bg-white dark:bg-darkBG rounded-lg p-4 top-20 right-8 shadow-drop-shadow flex flex-col gap-4 justify-start">
           <button
             onClick={() => handleEdit(activeBoard)}
             className="text-start text-mediumGrey bodyL hover:text-mainPurple"
@@ -52,7 +52,7 @@ const Navbar = ({ isMobile, setIsBoardsListOpen, isBoardsListOpen }) => {
       )}
 
       {/* Board Title */}
-      <h1 className="headingL sm:headingXL text-black mr-auto flex gap-2 items-center">
+      <h1 className="headingL sm:headingXL text-black dark:text-white mr-auto flex gap-2 items-center">
         {activeBoard.name}{" "}
         {isMobile &&
           (isBoardsListOpen ? (

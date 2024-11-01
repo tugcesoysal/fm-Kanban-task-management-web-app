@@ -45,16 +45,19 @@ const AddTaskModal = () => {
   };
 
   return (
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[343px] sm:w-[480px] bg-white rounded-md p-6 md:p-8 flex flex-col gap-6 shadow-lg z-40">
-      <h2 className="headingL text-black">Add New Task</h2>
+    <div className=" fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[343px] sm:w-[480px] bg-white dark:bg-darkGrey rounded-md p-6 md:p-8 flex flex-col gap-6 shadow-lg z-40 overflow-y-auto">
+      <h2 className="headingL text-black dark:text-white">Add New Task</h2>
       <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
         {/* Title */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="title" className="bodyM text-mediumGrey">
+          <label
+            htmlFor="title"
+            className="bodyM text-mediumGrey dark:text-white"
+          >
             Title
           </label>
           <input
-            className="w-full rounded-[4px] border border-linesLight outline-none px-4 py-2 bodyL text-black cursor-pointer hover:border-mainPurple"
+            className="w-full bg-transparent rounded-[4px] border border-linesLight dark:border-linesDark outline-none px-4 py-2 bodyL text-black dark:text-white cursor-pointer  focus:border-mainPurple dark:focus:border-mainPurple hover:border-mainPurple dark:hover:border-mainPurple"
             type="text"
             name="title"
             id="title"
@@ -72,11 +75,14 @@ const AddTaskModal = () => {
 
         {/* Description */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="description" className="bodyM text-mediumGrey">
+          <label
+            htmlFor="description"
+            className="bodyM text-mediumGrey dark:text-white"
+          >
             Description
           </label>
           <textarea
-            className="w-full rounded-[4px] border border-linesLight outline-none px-4 py-2 bodyL text-black resize-none cursor-pointer hover:border-mainPurple"
+            className="w-full bg-transparent rounded-[4px] border border-linesLight dark:border-linesDark outline-none px-4 py-2 bodyL text-black dark:text-white resize-none cursor-pointer focus:border-mainPurple dark:focus:border-mainPurple hover:border-mainPurple dark:hover:border-mainPurple"
             rows={4}
             name="description"
             id="description"
@@ -93,13 +99,16 @@ const AddTaskModal = () => {
 
         {/* Subtasks */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="subtask" className="bodyM text-mediumGrey">
+          <label
+            htmlFor="subtask"
+            className="bodyM text-mediumGrey dark:text-white"
+          >
             Subtasks
           </label>
           {newTask.subtasks.map((s, index) => (
             <div key={index} className="flex gap-4 items-center">
               <input
-                className="flex-1 rounded-[4px] border border-linesLight px-4 py-2 bodyL text-black outline-none"
+                className="bg-transparent flex-1 rounded-[4px] border border-linesLight dark:border-linesDark px-4 py-2 bodyL text-black dark:text-white outline-none cursor-pointer focus:border-mainPurple dark:focus:border-mainPurple hover:border-mainPurple dark:hover:border-mainPurple"
                 placeholder="Subtask title"
                 type="text"
                 id={`subtask-${index}`}
@@ -122,7 +131,7 @@ const AddTaskModal = () => {
           ))}
           <button
             onClick={handleAddSubtask}
-            className="w-full bg-mainPurple bg-opacity-10 py-2 rounded-[20px] text-mainPurple bodyL font-bold hover:bg-opacity-25"
+            className="w-full bg-mainPurple dark:bg-white bg-opacity-10 py-2 rounded-[20px] text-mainPurple dark:text-mainPurple bodyL font-bold hover:bg-opacity-25"
           >
             + Add New Subtask
           </button>
@@ -130,14 +139,18 @@ const AddTaskModal = () => {
 
         {/* Current Status Dropdown */}
         <div className="relative">
-          <h3 className="bodyM text-mediumGrey mb-2">Current Status</h3>
+          <h3 className="bodyM text-mediumGrey dark:text-white mb-2">
+            Current Status
+          </h3>
           <div
-            className="bg-white bodyL text-black border border-mediumGrey rounded-md px-4 py-2 flex items-center justify-between cursor-pointer hover:border-mainPurple"
+            className="bg-transparent bodyL text-black dark:text-white border  border-linesLight dark:border-linesDark rounded-md px-4 py-2 flex items-center justify-between cursor-pointer focus:border-mainPurple dark:focus:border-mainPurple hover:border-mainPurple dark:hover:border-mainPurple"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             role="button"
             aria-expanded={isDropdownOpen}
           >
-            <span className="bodyL text-black">{newTask.status}</span>
+            <span className="bodyL text-black dark:text-white">
+              {newTask.status}
+            </span>
             {isDropdownOpen ? (
               <FaChevronUp className="text-mainPurple" />
             ) : (
@@ -148,13 +161,13 @@ const AddTaskModal = () => {
           {/* Dropdown List */}
           {isDropdownOpen && (
             <ul
-              className="absolute top-full mt-2 left-0 w-full bg-white border border-mediumGrey rounded-md shadow-lg"
+              className="absolute top-full mt-2 left-0 w-full bg-white dark:bg-darkGrey border border-linesLight dark:border-linesDark rounded-md shadow-lg"
               role="listbox"
             >
               {statusOptions.map((option, idx) => (
                 <li
                   key={idx}
-                  className={`bodyL text-mediumGrey flex justify-between items-center px-4 py-2 hover:bg-lightBG cursor-pointer ${
+                  className={`bodyL text-mediumGrey dark:text-white flex justify-between items-center px-4 py-2 hover:bg-lightBG dark:hover:bg-darkBG cursor-pointer ${
                     newTask.status === option && "text-mainPurple"
                   }`}
                   onClick={() => handleStatus(option)}

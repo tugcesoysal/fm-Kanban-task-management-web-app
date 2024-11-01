@@ -27,16 +27,19 @@ const AddBoardModal = () => {
   };
 
   return (
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[343px] sm:w-[480px] bg-white rounded-md p-6 md:p-8 flex flex-col gap-6 shadow-lg z-40">
-      <h2 className="headingL text-black">Add New Board</h2>
+    <div className=" max-h-[90vh] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[343px] sm:w-[480px] bg-white dark:bg-darkGrey rounded-md p-6 md:p-8 flex flex-col gap-6 shadow-lg z-40 overflow-y-auto">
+      <h2 className="headingL text-black dark:text-white">Add New Board</h2>
       <form className="flex flex-col gap-6">
         {/* Name */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="name" className="bodyM text-mediumGrey">
-            Name
+          <label
+            htmlFor="name"
+            className="bodyM text-mediumGrey dark:text-white"
+          >
+            Board Name
           </label>
           <input
-            className="w-full rounded-[4px] border border-linesLight outline-none px-4 py-2 bodyL text-black"
+            className="bg-transparent w-full rounded-[4px] border border-linesLight dark:border-linesDark outline-none px-4 py-2 bodyL text-black dark:text-white"
             type="text"
             name="name"
             id="name"
@@ -53,13 +56,16 @@ const AddBoardModal = () => {
 
         {/* Subtasks */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="column" className="bodyM text-mediumGrey">
-            Columns
+          <label
+            htmlFor="column"
+            className="bodyM text-mediumGrey dark:text-white"
+          >
+            Board Columns
           </label>
           {newBoard.columns.map((c, index) => (
             <div key={index} className="flex gap-4 items-center">
               <input
-                className="flex-1 rounded-[4px] border border-linesLight px-4 py-2 bodyL text-black outline-none"
+                className="bg-transparent flex-1 rounded-[4px] border border-linesLight dark:border-linesDark px-4 py-2 bodyL text-black dark:text-white outline-none"
                 placeholder="....."
                 type="text"
                 id={`column-${index}`}
@@ -82,7 +88,7 @@ const AddBoardModal = () => {
           ))}
           <button
             onClick={handleAddColumn}
-            className="w-full bg-mainPurple bg-opacity-10 py-2 rounded-[20px] text-mainPurple bodyL font-bold"
+            className="w-full bg-mainPurple dark:bg-white bg-opacity-10 py-2 rounded-[20px] text-mainPurple bodyL font-bold"
           >
             + Add New Column
           </button>

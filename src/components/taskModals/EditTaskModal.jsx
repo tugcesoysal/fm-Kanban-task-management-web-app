@@ -26,16 +26,19 @@ const EditTaskModal = () => {
   };
 
   return (
-    <div className="relative w-[343px] sm:w-[480px] bg-white rounded-md p-8 flex flex-col gap-6 shadow-lg">
-      <h2 className="headingL text-black">Edit Task</h2>
+    <div className="max-h-[90vh] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[343px] sm:w-[480px] bg-white dark:bg-darkGrey rounded-md p-8 flex flex-col gap-6 shadow-lg z-40 overflow-y-auto">
+      <h2 className="headingL text-black dark:text-white">Edit Task</h2>
       <form onSubmit={handleSaveChanges} className="flex flex-col gap-6">
         {/* Title */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="title" className="bodyM text-mediumGrey">
+          <label
+            htmlFor="title"
+            className="bodyM text-mediumGrey dark:text-white"
+          >
             Title
           </label>
           <input
-            className="w-full rounded-[4px] border border-linesLight px-4 py-2 bodyL text-black"
+            className="bg-transparent w-full rounded-[4px] border border-linesLight dark:border-linesDark px-4 py-2 bodyL text-black dark:text-white outline-none cursor-pointer hover:border-mainPurple dark:hover:border-mainPurple"
             type="text"
             name="title"
             id="title"
@@ -46,11 +49,14 @@ const EditTaskModal = () => {
 
         {/* Description */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="description" className="bodyM text-mediumGrey">
+          <label
+            htmlFor="description"
+            className="bodyM text-mediumGrey dark:text-white"
+          >
             Description
           </label>
           <textarea
-            className="w-full rounded-[4px] border border-linesLight outline-none px-4 py-2 bodyL text-black resize-none"
+            className="bg-transparent w-full rounded-[4px] border border-linesLight dark:border-linesDark outline-none px-4 py-2 bodyL text-black dark:text-white resize-none cursor-pointer hover:border-mainPurple dark:hover:border-mainPurple"
             rows={4}
             name="description"
             id="description"
@@ -62,13 +68,16 @@ const EditTaskModal = () => {
 
         {/* Subtasks */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="subtask" className="bodyM text-mediumGrey">
+          <label
+            htmlFor="subtask"
+            className="bodyM text-mediumGrey dark:text-white"
+          >
             Subtasks
           </label>
           {subtasks.map((s, index) => (
             <div key={index} className="flex gap-4 items-center">
               <input
-                className="flex-1 rounded-[4px] border border-linesLight px-4 py-2 bodyL text-black outline-none"
+                className="bg-transparent flex-1 rounded-[4px] border border-linesLight dark:border-linesDark px-4 py-2 bodyL text-black dark:text-white outline-none cursor-pointer hover:border-mainPurple dark:hover:border-mainPurple"
                 type="text"
                 id={`subtask-${index}`}
                 name={`subtask-${index}`}
@@ -80,7 +89,7 @@ const EditTaskModal = () => {
                 }}
               />
               <RxCross2
-                className="size-5 text-mediumGrey cursor-pointer hover:text-mainPurple"
+                className="size-5 text-mediumGrey cursor-pointer hover:text-red"
                 onClick={() => {
                   const updatedSubtasks = subtasks.filter(
                     (_, i) => i !== index,
@@ -90,31 +99,37 @@ const EditTaskModal = () => {
               />
             </div>
           ))}
-          <button className="w-full bg-mainPurple bg-opacity-10 py-2 rounded-[20px] text-mainPurple bodyL font-bold">
+          <button className="w-full bg-mainPurple dark:bg-white bg-opacity-10 py-2 rounded-[20px] text-mainPurple dark:text-mainPurple bodyL font-bold">
             + Add New Subtask
           </button>
         </div>
 
         {/* Current Status Dropdown */}
         <div className="relative">
-          <h3 className="bodyM text-mediumGrey mb-2">Current Status</h3>
+          <h3 className="bodyM text-mediumGrey dark:text-white mb-2">
+            Current Status
+          </h3>
           <div
-            className="bg-white bodyL text-black border border-mediumGrey rounded-md px-4 py-2 flex items-center justify-between cursor-pointer"
+            className={`bg-transparent bodyL text-black border border-linesLight dark:border-linesDark rounded-md px-4 py-2 flex items-center justify-between cursor-pointer hover:border-mainPurple dark:hover:border-mainPurple ${
+              isDropdownOpen && "border-mainPurple dark:border-mainPurple"
+            }`}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <span className="bodyL text-black">{task.status}</span>
+            <span className="bodyL text-black dark:text-white">
+              {task.status}
+            </span>
             {isDropdownOpen ? (
-              <FaChevronUp />
+              <FaChevronUp className="text-mainPurple" />
             ) : (
               <FaChevronDown className="text-mainPurple" />
             )}
           </div>
           {isDropdownOpen && (
-            <ul className="absolute top-full mt-2 left-0 w-full bg-white border border-mediumGrey rounded-md shadow-lg">
+            <ul className="absolute top-full mt-2 left-0 w-full bg-white dark:bg-darkGrey border border-linesLight dark:border-linesDark rounded-md shadow-lg">
               {statusOptions.map((option, idx) => (
                 <li
                   key={idx}
-                  className={`bodyL text-mediumGrey flex justify-between items-center px-4 py-2 hover:bg-lightBG cursor-pointer ${
+                  className={`bodyL text-mediumGrey dark:text-white flex justify-between items-center px-4 py-2 hover:bg-lightBG dark:hover:bg-darkBG cursor-pointer ${
                     task.status === option && "text-mainPurple"
                   }`}
                   onClick={() => handleStatus(option)}

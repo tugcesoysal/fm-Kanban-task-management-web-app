@@ -32,7 +32,7 @@ function App() {
   };
 
   return (
-    <div className="relative h-screen font-jakarta bg-lightBG flex flex-row">
+    <div className="relative h-full font-jakarta bg-lightBG dark:bg-darkBG flex flex-row">
       {!isMobile && <SideBar />}
       <div className="w-full max-w-full overflow-x-hidden flex flex-col mb-12">
         <Navbar
