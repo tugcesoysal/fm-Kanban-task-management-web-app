@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useBoard } from "../BoardContext";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -7,6 +7,8 @@ const Navbar = ({ isMobile, setIsBoardsListOpen, isBoardsListOpen }) => {
   const { openModal, activeBoard } = useBoard();
 
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState(false);
+
+  const editDeleteRef = useRef(null);
 
   const handleEdit = (activeBoard) => {
     openModal("EDIT_BOARD", activeBoard);
@@ -20,6 +22,21 @@ const Navbar = ({ isMobile, setIsBoardsListOpen, isBoardsListOpen }) => {
 
   const toggleBoardsList = () => setIsBoardsListOpen((prev) => !prev);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        editDeleteRef.current &&
+        !editDeleteRef.current.contains(event.target)
+      ) {
+        setIsEditDeleteOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
       className={`relative flex flex-row justify-between items-center h-16 sm:h-24 px-6 bg-white dark:bg-darkGrey ${
@@ -28,7 +45,10 @@ const Navbar = ({ isMobile, setIsBoardsListOpen, isBoardsListOpen }) => {
     >
       {/* EDIT / DELETE */}
       {isEditDeleteOpen && (
-        <div className="absolute min-w-[192px] bg-white dark:bg-darkBG rounded-lg p-4 top-20 right-8 shadow-drop-shadow flex flex-col gap-4 justify-start">
+        <div
+          ref={editDeleteRef}
+          className="absolute min-w-[192px] bg-white dark:bg-darkBG rounded-lg p-4 top-20 right-8 shadow-drop-shadow flex flex-col gap-4 justify-start"
+        >
           <button
             onClick={() => handleEdit(activeBoard)}
             className="text-start text-mediumGrey bodyL hover:text-mainPurple"
