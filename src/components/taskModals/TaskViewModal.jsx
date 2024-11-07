@@ -2,17 +2,24 @@ import { useState, useEffect } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
 import { useBoard } from "../../BoardContext";
+import { toast } from "react-toastify";
 
 const TaskViewModal = () => {
+  const {
+    modal,
+    openModal,
+    updateTask,
+    activeBoard,
+    setBoards,
+    setActiveBoard,
+  } = useBoard();
+
   const [isEditDeleteOpen, setIsEditDeleteOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const statusOptions = ["Doing", "To Do", "Done"];
-  const { modal, openModal, updateTask } = useBoard();
+  const statusOptions = activeBoard
+    ? activeBoard.columns.map((c) => c.name)
+    : [];
   const [task, setTask] = useState(modal.data);
-
-  useEffect(() => {
-    setTask(modal.data);
-  }, [modal.data]);
 
   const toggleSubtaskCompletion = (subtaskIndex) => {
     const updatedSubtasks = task.subtasks.map((subtask, index) =>
@@ -26,18 +33,62 @@ const TaskViewModal = () => {
   };
 
   const updateTaskStatus = (newStatus) => {
-    const updatedTask = { ...task, status: newStatus };
-    setTask(updatedTask);
-    updateTask(updatedTask);
+    const currentColumn = activeBoard.columns.find((column) =>
+      column.tasks.some((t) => t.id === task.id),
+    );
+    const targetColumn = activeBoard.columns.find(
+      (column) => column.name === newStatus,
+    );
+
+    if (currentColumn.id === targetColumn.id) {
+      setIsDropdownOpen(false);
+      return;
+    }
+
+    const updatedCurrentColumn = {
+      ...currentColumn,
+      tasks: currentColumn.tasks.filter((t) => t.id !== task.id),
+    };
+    const updatedTargetColumn = {
+      ...targetColumn,
+      tasks: [...targetColumn.tasks, { ...task, status: newStatus }],
+    };
+
+    setBoards((prevBoards) => {
+      const updatedBoards = prevBoards.map((board) => {
+        if (board.id === activeBoard.id) {
+          const updatedColumns = board.columns.map((column) => {
+            if (column.id === currentColumn.id) {
+              return updatedCurrentColumn;
+            }
+            if (column.id === targetColumn.id) {
+              return updatedTargetColumn;
+            }
+            return column;
+          });
+          return { ...board, columns: updatedColumns };
+        }
+        return board;
+      });
+      const refreshedActiveBoard = updatedBoards.find(
+        (board) => board.id === activeBoard.id,
+      );
+      setActiveBoard(refreshedActiveBoard);
+      return updatedBoards;
+    });
+
+    // Update task status locally
+    setTask((prevTask) => ({ ...prevTask, status: newStatus }));
     setIsDropdownOpen(false);
+    toast.success("Task status updated successfully!");
   };
 
   const openTaskEdit = () => {
-    openModal("EDIT_TASK", modal.data);
+    openModal("EDIT_TASK", task);
   };
 
   const openTaskDelete = () => {
-    openModal("DELETE_TASK", modal.data);
+    openModal("DELETE_TASK", task);
   };
 
   return (

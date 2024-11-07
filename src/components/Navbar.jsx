@@ -36,7 +36,7 @@ const Navbar = ({ isMobile, setIsBoardsListOpen, isBoardsListOpen }) => {
             Edit Board
           </button>
           <button
-            onClick={() => handleDelete(activeBoard)}
+            onClick={() => handleDelete(activeBoard.id)}
             className="text-start text-red bodyL hover:text-redHover"
           >
             Delete Board

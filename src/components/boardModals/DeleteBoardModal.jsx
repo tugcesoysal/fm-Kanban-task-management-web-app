@@ -12,7 +12,7 @@ const DeleteBoardModal = () => {
       </p>
       <div className="flex flex-col sm:flex-row gap-4">
         <button
-          onClick={deleteBoard}
+          onClick={() => deleteBoard(activeBoard.id)}
           className="flex-1 py-2 bg-red text-white bodyL font-bold rounded-[20px] hover:bg-redHover"
         >
           Delete

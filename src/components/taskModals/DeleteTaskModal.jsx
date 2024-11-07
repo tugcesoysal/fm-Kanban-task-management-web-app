@@ -18,8 +18,7 @@ const DeleteTaskModal = () => {
         <button
           className="flex-1 py-2 bg-red text-white bodyL font-bold rounded-[20px] hover:bg-redHover"
           onClick={() => {
-            deleteTask();
-            closeModal();
+            deleteTask(task.id);
           }}
         >
           Delete

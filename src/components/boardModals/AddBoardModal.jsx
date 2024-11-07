@@ -26,6 +26,11 @@ const AddBoardModal = () => {
     }));
   };
 
+  const handleCreateBoard = (e) => {
+    e.preventDefault();
+    addBoard(newBoard);
+  };
+
   return (
     <div className=" max-h-[90vh] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[343px] sm:w-[480px] bg-white dark:bg-darkGrey rounded-md p-6 md:p-8 flex flex-col gap-6 shadow-lg z-40 overflow-y-auto">
       <h2 className="headingL text-black dark:text-white">Add New Board</h2>
@@ -95,7 +100,7 @@ const AddBoardModal = () => {
         </div>
 
         <button
-          onClick={addBoard}
+          onClick={handleCreateBoard}
           type="button"
           className="w-full bg-mainPurple py-2 rounded-[20px] text-white bodyL font-bold hover:bg-mainPurpleHover"
         >

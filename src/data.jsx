@@ -1,11 +1,17 @@
+import { v4 as uuidv4 } from "uuid";
+
 const data = [
   {
+    id: uuidv4(),
     name: "Platform Launch",
     columns: [
       {
+        id: uuidv4(),
         name: "Todo",
         tasks: [
           {
+            id: uuidv4(),
+
             title: "Build UI for onboarding flow",
             description: "",
             status: "Todo",
@@ -25,6 +31,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Build UI for search",
             description: "",
             status: "Todo",
@@ -36,6 +44,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Build settings UI",
             description: "",
             status: "Todo",
@@ -51,6 +61,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "QA and test all major user journeys",
             description:
               "Once we feel version one is ready, we need to rigorously test it both internally and externally to identify any major gaps.",
@@ -69,9 +81,13 @@ const data = [
         ],
       },
       {
+        id: uuidv4(),
+
         name: "Doing",
         tasks: [
           {
+            id: uuidv4(),
+
             title: "Design settings and search pages",
             description: "",
             status: "Doing",
@@ -91,6 +107,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Add account management endpoints",
             description: "",
             status: "Doing",
@@ -110,6 +128,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Design onboarding flow",
             description: "",
             status: "Doing",
@@ -129,6 +149,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Add search enpoints",
             description: "",
             status: "Doing",
@@ -144,6 +166,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Add authentication endpoints",
             description: "",
             status: "Doing",
@@ -159,6 +183,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title:
               "Research pricing points of various competitors and trial different business models",
             description:
@@ -183,9 +209,13 @@ const data = [
         ],
       },
       {
+        id: uuidv4(),
+
         name: "Done",
         tasks: [
           {
+            id: uuidv4(),
+
             title: "Conduct 5 wireframe tests",
             description:
               "Ensure the layout continues to make sense and we have strong buy-in from potential users.",
@@ -198,6 +228,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Create wireframe prototype",
             description:
               "Create a greyscale clickable wireframe prototype to test our asssumptions so far.",
@@ -210,6 +242,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Review results of usability tests and iterate",
             description:
               "Keep iterating through the subtasks until we're clear on the core concepts for the app.",
@@ -231,6 +265,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title:
               "Create paper prototypes and conduct 10 usability tests with potential customers",
             description: "",
@@ -247,6 +283,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Market discovery",
             description:
               "We need to define and refine our core product. Interviews will help us learn common pain points and help us define the strongest MVP.",
@@ -259,6 +297,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Competitor analysis",
             description: "",
             status: "Done",
@@ -274,6 +314,8 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Research the market",
             description:
               "We need to get a solid overview of the market to ensure we have up-to-date estimates of market size and demand.",
@@ -294,12 +336,15 @@ const data = [
     ],
   },
   {
+    id: uuidv4(),
     name: "Marketing Plan",
     columns: [
       {
+        id: uuidv4(),
         name: "Todo",
         tasks: [
           {
+            id: uuidv4(),
             title: "Plan Product Hunt launch",
             description: "",
             status: "Todo",
@@ -331,9 +376,11 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Share on Show HN",
             description: "",
-            status: "",
+            status: "Todo",
             subtasks: [
               {
                 title: "Draft out HN post",
@@ -350,9 +397,11 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
+
             title: "Write launch article to publish on multiple channels",
             description: "",
-            status: "",
+            status: "Todo",
             subtasks: [
               {
                 title: "Write article",
@@ -375,25 +424,31 @@ const data = [
         ],
       },
       {
+        id: uuidv4(),
         name: "Doing",
         tasks: [],
       },
       {
+        id: uuidv4(),
         name: "Done",
         tasks: [],
       },
     ],
   },
   {
+    id: uuidv4(),
     name: "Roadmap",
     columns: [
       {
+        id: uuidv4(),
         name: "Now",
         tasks: [
           {
+            id: uuidv4(),
+
             title: "Launch version one",
             description: "",
-            status: "",
+            status: "Now",
             subtasks: [
               {
                 title: "Launch privately to our waitlist",
@@ -406,10 +461,11 @@ const data = [
             ],
           },
           {
+            id: uuidv4(),
             title: "Review early feedback and plan next steps for roadmap",
             description:
               "Beyond the initial launch, we're keeping the initial roadmap completely empty. This meeting will help us plan out our next steps based on actual customer feedback.",
-            status: "",
+            status: "Now",
             subtasks: [
               {
                 title: "Interview 10 customers",
@@ -428,10 +484,12 @@ const data = [
         ],
       },
       {
+        id: uuidv4(),
         name: "Next",
         tasks: [],
       },
       {
+        id: uuidv4(),
         name: "Later",
         tasks: [],
       },

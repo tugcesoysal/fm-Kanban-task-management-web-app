@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import data from "./data";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
 
 const saveBoardsToLocalStorage = (boards) => {
   try {
@@ -19,6 +21,24 @@ const loadBoardsFromLocalStorage = () => {
   }
 };
 
+const saveActiveBoardToLocalStorage = (activeBoardId) => {
+  try {
+    localStorage.setItem("activeBoardId", JSON.stringify(activeBoardId));
+  } catch (error) {
+    console.error("Error saving active board ID to localStorage", error);
+  }
+};
+
+const loadActiveBoardIdFromLocalStorage = () => {
+  try {
+    const storedActiveBoardId = localStorage.getItem("activeBoardId");
+    return storedActiveBoardId ? JSON.parse(storedActiveBoardId) : null;
+  } catch (error) {
+    console.error("Error loading active board ID from localStorage", error);
+    return null;
+  }
+};
+
 const BoardContext = createContext();
 
 export const useBoard = () => {
@@ -28,13 +48,31 @@ export const useBoard = () => {
 export const BoardProvider = ({ children }) => {
   const [boards, setBoards] = useState(() => {
     const storedBoards = loadBoardsFromLocalStorage();
-    return storedBoards.length > 0 ? storedBoards : data;
+    return Array.isArray(storedBoards) && storedBoards.length > 0
+      ? storedBoards
+      : data;
   });
-  const [activeBoard, setActiveBoard] = useState(boards[0] || []);
 
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("theme") || "light";
+  const [activeBoard, setActiveBoard] = useState(() => {
+    const storedActiveBoardId = loadActiveBoardIdFromLocalStorage();
+    return (
+      boards.find((board) => board.id === storedActiveBoardId) ||
+      boards[0] ||
+      null
+    );
   });
+
+  const handleSetActiveBoard = (boardId) => {
+    const selectedBoard = boards.find((board) => board.id === boardId);
+    if (selectedBoard) {
+      setActiveBoard(selectedBoard);
+      saveActiveBoardToLocalStorage(boardId);
+    }
+  };
+
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "light",
+  );
 
   useEffect(() => {
     if (theme === "dark") {
@@ -54,6 +92,10 @@ export const BoardProvider = ({ children }) => {
     saveBoardsToLocalStorage(boards);
   }, [boards]);
 
+  useEffect(() => {
+    if (activeBoard) saveActiveBoardToLocalStorage(activeBoard.id);
+  }, [activeBoard]);
+
   const [modal, setModal] = useState({ type: null, data: null });
 
   const openModal = (type, data = null) => {
@@ -68,35 +110,118 @@ export const BoardProvider = ({ children }) => {
     closeModal();
   };
 
-  // Add a new board
-  const addBoard = () => {
-    console.log("board added");
+  const addBoard = (newBoard) => {
+    const newBoardWithId = { id: uuidv4(), ...newBoard };
+    setBoards((prevBoards) => {
+      const updatedBoards = [...prevBoards, newBoardWithId];
+      return updatedBoards;
+    });
+    setActiveBoard(newBoardWithId);
+    toast.success("Board added successfully!");
     closeModal();
   };
 
-  // Update an existing board
-  const updateBoard = () => {
-    console.log("board updated");
+  const updateBoard = (updatedBoard) => {
+    setBoards((prevBoards) => {
+      const updatedBoards = prevBoards.map((board) =>
+        board.id === updatedBoard.id ? { ...board, ...updatedBoard } : board,
+      );
+      return updatedBoards;
+    });
+    setActiveBoard(updatedBoard);
+    toast.success("Board updated successfully!");
     closeModal();
   };
 
-  const deleteBoard = () => {
-    console.log("board deleted");
+  const deleteBoard = (boardId) => {
+    setBoards((prevBoards) => {
+      const updatedBoards = prevBoards.filter((board) => board.id !== boardId);
+      return updatedBoards;
+    });
+    setActiveBoard(boards[0]);
+    toast.success("Board deleted successfully!");
     closeModal();
   };
 
-  const addTask = () => {
-    console.log("task created");
+  const addTask = (newTask) => {
+    const newTaskWithId = { id: uuidv4(), ...newTask };
+
+    setBoards((prevBoards) => {
+      const updatedBoards = prevBoards.map((board) => {
+        if (board.id === activeBoard.id) {
+          const updatedColumns = board.columns.map((column) => {
+            if (column.name === newTask.status) {
+              return {
+                ...column,
+                tasks: [...column.tasks, newTaskWithId],
+              };
+            }
+            return column;
+          });
+          return { ...board, columns: updatedColumns };
+        }
+        return board;
+      });
+
+      const updatedActiveBoard = updatedBoards.find(
+        (board) => board.id === activeBoard.id,
+      );
+      if (updatedActiveBoard) {
+        setActiveBoard(updatedActiveBoard);
+      }
+
+      return updatedBoards;
+    });
+
+    toast.success("Task added successfully!");
     closeModal();
   };
 
-  const updateTask = () => {
-    console.log("task updated");
-    closeModal();
+  const updateTask = (updatedTask) => {
+    setBoards((prevBoards) => {
+      const updatedBoards = prevBoards.map((board) => {
+        if (board.id === activeBoard.id) {
+          const updatedColumns = board.columns.map((column) => {
+            const updatedTasks = column.tasks.map((task) =>
+              task.id === updatedTask.id ? { ...task, ...updatedTask } : task,
+            );
+            return { ...column, tasks: updatedTasks };
+          });
+          return { ...board, columns: updatedColumns };
+        }
+        return board;
+      });
+      const refreshedActiveBoard = updatedBoards.find(
+        (board) => board.id === activeBoard.id,
+      );
+      setActiveBoard(refreshedActiveBoard);
+      return updatedBoards;
+    });
+
+    toast.success("Task updated successfully!");
   };
 
-  const deleteTask = () => {
-    console.log("task deleted");
+  const deleteTask = (taskId) => {
+    setBoards((prevBoards) => {
+      const updatedBoards = prevBoards.map((board) => {
+        if (board.id === activeBoard.id) {
+          const updatedColumns = board.columns.map((column) => ({
+            ...column,
+            tasks: column.tasks.filter((task) => task.id !== taskId),
+          }));
+          return { ...board, columns: updatedColumns };
+        }
+        return board;
+      });
+      const updatedActiveBoard = updatedBoards.find(
+        (board) => board.id === activeBoard.id,
+      );
+      if (updatedActiveBoard) {
+        setActiveBoard(updatedActiveBoard);
+      }
+      return updatedBoards;
+    });
+    toast.success("Task deleted successfully!");
     closeModal();
   };
 
@@ -105,6 +230,7 @@ export const BoardProvider = ({ children }) => {
       boards,
       activeBoard,
       setActiveBoard,
+      handleSetActiveBoard,
       addBoard,
       updateBoard,
       deleteBoard,
@@ -117,6 +243,7 @@ export const BoardProvider = ({ children }) => {
       cancel,
       theme,
       toggleTheme,
+      setBoards,
     }),
     [boards, activeBoard, modal, theme],
   );

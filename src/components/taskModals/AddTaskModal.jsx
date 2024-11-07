@@ -4,20 +4,21 @@ import { RxCross2 } from "react-icons/rx";
 import { useBoard } from "../../BoardContext";
 
 const AddTaskModal = () => {
+  const { addTask, activeBoard } = useBoard();
+  const statusOptions = activeBoard
+    ? activeBoard.columns.map((c) => c.name)
+    : [];
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
-    status: "To Do",
+    status: statusOptions[0],
     subtasks: [
       { title: "", isCompleted: false },
       { title: "", isCompleted: false },
     ],
   });
-
-  const statusOptions = ["Doing", "To Do", "Done"];
-
-  const { addTask } = useBoard();
 
   const handleStatus = (newStatus) => {
     setNewTask((prevTask) => ({ ...prevTask, status: newStatus }));
@@ -41,7 +42,16 @@ const AddTaskModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addTask(); // Pass the new task to a parent handler or save function
+    addTask(newTask);
+    setNewTask({
+      title: "",
+      description: "",
+      status: statusOptions[0],
+      subtasks: [
+        { title: "", isCompleted: false },
+        { title: "", isCompleted: false },
+      ],
+    });
   };
 
   return (

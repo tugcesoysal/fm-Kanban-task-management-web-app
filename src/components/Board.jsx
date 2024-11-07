@@ -12,7 +12,7 @@ const Board = () => {
   };
 
   return (
-    <div className="h-full p-6 flex gap-6 ">
+    <div key={activeBoard.id} className="h-full p-6 flex gap-6 ">
       {activeBoard.columns.map((col, colIndex) => (
         <div key={colIndex} className="w-[280px]">
           <div className="flex gap-3 w-[280px] ">

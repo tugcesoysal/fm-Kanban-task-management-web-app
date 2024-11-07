@@ -2,9 +2,17 @@ import { useState } from "react";
 import { FaChevronDown, FaChevronUp, FaCheck } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { useBoard } from "../../BoardContext";
+import { toast } from "react-toastify";
 
 const EditTaskModal = () => {
-  const { modal, updateTask } = useBoard();
+  const {
+    modal,
+    updateTask,
+    activeBoard,
+    closeModal,
+    setBoards,
+    setActiveBoard,
+  } = useBoard();
   const [task, setTask] = useState(modal.data);
 
   const [title, setTitle] = useState(task?.title || "");
@@ -12,17 +20,65 @@ const EditTaskModal = () => {
   const [subtasks, setSubtasks] = useState(task?.subtasks || []);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const statusOptions = ["Doing", "To Do", "Done"];
+  const statusOptions = activeBoard
+    ? activeBoard.columns.map((c) => c.name)
+    : [];
 
-  const handleStatus = (newStatus) => {
+  const updateTaskStatus = (newStatus) => {
+    const currentColumn = activeBoard.columns.find((column) =>
+      column.tasks.some((t) => t.id === task.id),
+    );
+    const targetColumn = activeBoard.columns.find(
+      (column) => column.name === newStatus,
+    );
+
+    if (currentColumn.id === targetColumn.id) {
+      setIsDropdownOpen(false);
+      return;
+    }
+
+    const updatedCurrentColumn = {
+      ...currentColumn,
+      tasks: currentColumn.tasks.filter((t) => t.id !== task.id),
+    };
+    const updatedTargetColumn = {
+      ...targetColumn,
+      tasks: [...targetColumn.tasks, { ...task, status: newStatus }],
+    };
+
+    setBoards((prevBoards) => {
+      const updatedBoards = prevBoards.map((board) => {
+        if (board.id === activeBoard.id) {
+          const updatedColumns = board.columns.map((column) => {
+            if (column.id === currentColumn.id) {
+              return updatedCurrentColumn;
+            }
+            if (column.id === targetColumn.id) {
+              return updatedTargetColumn;
+            }
+            return column;
+          });
+          return { ...board, columns: updatedColumns };
+        }
+        return board;
+      });
+      const refreshedActiveBoard = updatedBoards.find(
+        (board) => board.id === activeBoard.id,
+      );
+      setActiveBoard(refreshedActiveBoard);
+      return updatedBoards;
+    });
+
     setTask((prevTask) => ({ ...prevTask, status: newStatus }));
     setIsDropdownOpen(false);
+    toast.success("Task status updated successfully!");
   };
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
     const updatedTask = { ...task, title, description, subtasks };
     updateTask(updatedTask);
+    closeModal();
   };
 
   return (
@@ -132,7 +188,7 @@ const EditTaskModal = () => {
                   className={`bodyL text-mediumGrey dark:text-white flex justify-between items-center px-4 py-2 hover:bg-lightBG dark:hover:bg-darkBG cursor-pointer ${
                     task.status === option && "text-mainPurple"
                   }`}
-                  onClick={() => handleStatus(option)}
+                  onClick={() => updateTaskStatus(option)}
                 >
                   {option}{" "}
                   {task.status === option && (

@@ -5,7 +5,7 @@ import { useBoard } from "../BoardContext";
 import ThemeToggle from "./ThemeToggle";
 
 const SideBar = () => {
-  const { boards, setActiveBoard, activeBoard, openModal } = useBoard();
+  const { boards, handleSetActiveBoard, activeBoard, openModal } = useBoard();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -36,14 +36,14 @@ const SideBar = () => {
             </h3>
             {boards.map((board) => (
               <button
-                key={board.name}
+                key={board.id}
                 className={`flex gap-4 items-center px-8 headingM w-[90%] h-12 rounded-r-3xl 
               ${
-                activeBoard && activeBoard.name === board.name
+                activeBoard && activeBoard.id === board.id
                   ? "bg-mainPurple text-white"
                   : "text-mediumGrey hover:text-mainPurple dark:hover:text-mainPurple dark:hover:bg-white hover:bg-mainPurple hover:bg-opacity-10"
               }`}
-                onClick={() => setActiveBoard(board)}
+                onClick={() => handleSetActiveBoard(board.id)}
               >
                 <MdOutlineSpaceDashboard className="size-5" />
                 {board.name}
